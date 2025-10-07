@@ -9,7 +9,7 @@ namespace Employees.Backend.Data
         {
         }
 
-        public DbSet<Empleado> Empleado { get; set; }
+        public DbSet<Empleado> Empleados { get; set; }
 
         // Para crear index y evitar repeticiones de nombres de los tipos de categorias
         protected override void OnModelCreating(ModelBuilder modelBuilder)
