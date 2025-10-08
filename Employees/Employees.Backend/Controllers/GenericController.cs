@@ -23,10 +23,11 @@ namespace Employees.Backend.Controllers
             return BadRequest();
         }
 
-        [HttpGet("{nombre}")]
-        public virtual async Task<IActionResult> GetAsync(string nombre)
+        //Este metodo me filtra por nombre o apellido
+        [HttpGet("{firstName_LastName}")]
+        public virtual async Task<IActionResult> GetAsync(string firstName_LastName)
         {
-            var action = await _unitOfWork.GetAsync(nombre);
+            var action = await _unitOfWork.GetAsync(firstName_LastName);
             if (action.WasSuccess)
             {
                 return Ok(action.Result);
