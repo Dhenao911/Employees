@@ -16,7 +16,35 @@ namespace Employees.Backend.Controllers
             _context = context;
         }
 
-        //[HttpGet]
+        [HttpGet]
+        public async Task<IActionResult> Get()
+        {
+            return Ok(await _context.Empleados.ToListAsync());
+        }
+
+        /*[HttpGet("{id:int}")]
+        public async Task<IActionResult> Get(int id)
+        {
+            var empleado = await _context.Empleados.FirstOrDefaultAsync(e => e.Id==id);
+
+            if (empleado == null)
+                return NotFound();
+
+            return Ok(empleado);
+        }*/
+
+        [HttpGet("{nombre}")]
+
+        public async Task<IActionResult> Get(string nombre)
+        {
+            var empleado = await _context.Empleados.Where(e=>e.FirstName.Contains(nombre)).ToListAsync();
+
+            if(empleado==null || empleado.Count==0)
+                return NotFound();
+
+            return Ok(empleado);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Post(Empleado empleado)
         {
@@ -25,7 +53,26 @@ namespace Employees.Backend.Controllers
             return Ok(empleado);
         }
 
-        //[HttpPut]
-        // [HttpDelete]
+        [HttpPut]
+        public async Task<IActionResult> Put(Empleado empleado)
+        {
+            _context.Update(empleado);
+            await _context.SaveChangesAsync();
+            return Ok(empleado);
+        }
+
+        [HttpDelete ("{id:int}")]
+
+        public async Task<IActionResult> Delete(int id)
+        {
+            var empleado = await _context.Empleados.FirstOrDefaultAsync(x => x.Id == id);
+
+            if(empleado==null)
+                return NotFound();
+
+            _context.Remove(empleado);
+            await _context.SaveChangesAsync();
+            return Ok(empleado);
+        }
     }
 }
