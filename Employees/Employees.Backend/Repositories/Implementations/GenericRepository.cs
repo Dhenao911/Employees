@@ -40,7 +40,6 @@ namespace Employees.Backend.Repositories.Implementations
 
         public virtual async Task<ActionResponse<T>> DeleteAsync(int id)
         {
-           
             var row = await _entity.FindAsync(id);
             if (row != null)
             {
@@ -60,7 +59,8 @@ namespace Employees.Backend.Repositories.Implementations
                 {
                     WasSuccess = true,
                 };
-            }catch 
+            }
+            catch
             {
                 return new ActionResponse<T>
                 {
@@ -69,11 +69,9 @@ namespace Employees.Backend.Repositories.Implementations
             }
         }
 
-
         //Metodo que filtra registros por nombres o apellidos si colocas "Ju" buscara registros que coincidan con esa cadena
         public virtual async Task<ActionResponse<IEnumerable<T>>> GetAsync(string busqueda)
         {
-            
             //Busca en la base de datos que existan campos o propiedades que coincidan con FirstName o LastName
             var propiedadFirstName = typeof(T).GetProperty("FirstName");
             var propiedadLastName = typeof(T).GetProperty("LastName");
@@ -83,7 +81,6 @@ namespace Employees.Backend.Repositories.Implementations
             {
                 return new ActionResponse<IEnumerable<T>>
                 {
-                    WasSuccess = false,
                     Message = $"La entidad {typeof(T).Name} no tiene propiedades FirstName o LastName para búsqueda."
                 };
             }
@@ -111,7 +108,6 @@ namespace Employees.Backend.Repositories.Implementations
                 query = query.Where(e =>
                     EF.Functions.Like(EF.Property<string>(e, propiedadLastName.Name), $"%{busqueda}%"));
             }
-  
 
             var resultados = await query.ToListAsync();
 
@@ -120,7 +116,6 @@ namespace Employees.Backend.Repositories.Implementations
             {
                 return new ActionResponse<IEnumerable<T>>
                 {
-                    WasSuccess = false,
                     Message = $"No se encontraron registros de {typeof(T).Name} que contengan '{busqueda}'."
                 };
             }
