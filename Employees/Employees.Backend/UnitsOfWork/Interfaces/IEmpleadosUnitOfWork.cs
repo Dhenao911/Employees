@@ -6,6 +6,6 @@ namespace Employees.Backend.UnitsOfWork.Interfaces
     public interface IEmpleadosUnitOfWork
     {
         Task<ActionResponse<IEnumerable<Empleado>>> GetAsync(); 
-        Task<ActionResponse<IEnumerable<Empleado>>> GetAsync(string nombre);
+        Task<ActionResponse<IEnumerable<Empleado>>> GetAsync(string filtro);
     }
 }
