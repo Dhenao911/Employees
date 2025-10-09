@@ -10,8 +10,34 @@ namespace Employees.Backend.Controllers
     [Route("api/[Controller]")]
     public class EmpleadosController : GenericController<Empleado>
     {
-        public EmpleadosController(IGenericUnitOfWork<Empleado> unitOfWork) : base(unitOfWork)
+        private readonly IEmpleadosUnitOfWork _empleadosUnitOfWork;
+
+        public EmpleadosController(IGenericUnitOfWork<Empleado> unitOfWork,IEmpleadosUnitOfWork empleadosUnitOfWork) : base(unitOfWork)
         {
+            _empleadosUnitOfWork = empleadosUnitOfWork;
+        }
+
+        [HttpGet]
+        public override async Task<IActionResult> GetAsync()
+        {
+            var action = await _empleadosUnitOfWork.GetAsync();
+            if (action.WasSuccess)
+            {
+                return Ok(action.Result);
+            }
+            return BadRequest();
+        }
+
+        //Este metodo me filtra por nombre o apellido
+        [HttpGet("{filtro}")]
+        public override async Task<IActionResult> GetAsync(string filtro)
+        {
+            var action = await _empleadosUnitOfWork.GetAsync(filtro);
+            if (action.WasSuccess)
+            {
+                return Ok(action.Result);
+            }
+            return NotFound();
         }
     }
 }

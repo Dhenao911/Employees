@@ -4,7 +4,7 @@ namespace Employees.Backend.Repositories.Interfaces
 {
     public interface IGenericRepository<T> where T : class
     {
-        Task<ActionResponse<IEnumerable<T>>> GetAsync(string nombre);
+        Task<ActionResponse<IEnumerable<T>>> GetAsync(string filtro);
 
         Task<ActionResponse<IEnumerable<T>>> GetAsync();
 

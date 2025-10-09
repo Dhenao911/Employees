@@ -70,63 +70,60 @@ namespace Employees.Backend.Repositories.Implementations
         }
 
         //Metodo que filtra registros por nombres o apellidos si colocas "Ju" buscara registros que coincidan con esa cadena
-        public virtual async Task<ActionResponse<IEnumerable<T>>> GetAsync(string busqueda)
+        // Método genérico que busca registros que contengan una cadena de texto en cualquiera de sus campos de tipo string.
+        // Método genérico que busca una cadena dentro de cualquier propiedad string de la entidad
+        public virtual async Task<ActionResponse<IEnumerable<T>>> GetAsync(string filtro)
         {
-            //Busca en la base de datos que existan campos o propiedades que coincidan con FirstName o LastName
-            var propiedadFirstName = typeof(T).GetProperty("FirstName");
-            var propiedadLastName = typeof(T).GetProperty("LastName");
-
-            //Verifica que existan esas propiedades
-            if (propiedadFirstName == null && propiedadLastName == null)
+            // Validamos que se haya enviado un texto para buscar
+            if (string.IsNullOrWhiteSpace(filtro))
             {
                 return new ActionResponse<IEnumerable<T>>
                 {
-                    Message = $"La entidad {typeof(T).Name} no tiene propiedades FirstName o LastName para búsqueda."
+                    WasSuccess = false,
+                    Message = "Debe ingresar una cadena para buscar."
                 };
             }
 
-            //Filtra el registro que coincida con la cadena de caracteres
+            // Convertimos el filtro a minúsculas para búsqueda sin distinción de mayúsculas
+            filtro = filtro.ToLower();
 
-            var query = _entity.AsQueryable();
+            // Cargamos todos los registros de la entidad desde la base de datos
+            var registros = await _entity.ToListAsync();
 
-            //Filtra por FirtName y LastName
-            if (propiedadFirstName != null && propiedadLastName != null)
-            {
-                query = query.Where(e =>
-                    EF.Functions.Like(EF.Property<string>(e, propiedadFirstName.Name), $"%{busqueda}%") ||
-                    EF.Functions.Like(EF.Property<string>(e, propiedadLastName.Name), $"%{busqueda}%"));
-            }
-            //filtra solo por FirstName si este coincide
-            else if (propiedadFirstName != null)
-            {
-                query = query.Where(e =>
-                    EF.Functions.Like(EF.Property<string>(e, propiedadFirstName.Name), $"%{busqueda}%"));
-            }
-            //Si no solo filtra por LastName
-            else
-            {
-                query = query.Where(e =>
-                    EF.Functions.Like(EF.Property<string>(e, propiedadLastName.Name), $"%{busqueda}%"));
-            }
+            // Obtenemos las propiedades tipo string de la clase genérica T
+            var propiedadesTexto = typeof(T).GetProperties()
+                .Where(p => p.PropertyType == typeof(string))
+                .ToList();
 
-            var resultados = await query.ToListAsync();
+            // Filtramos en memoria (LINQ to Objects)
+            var resultados = registros.Where(e =>
+                propiedadesTexto.Any(p =>
+                {
+                    var valor = p.GetValue(e) as string;
+                    return valor != null && valor.ToLower().Contains(filtro);
+                })
+            ).ToList();
 
-            //Si no hay resultado no devuelve nada
-            if (resultados == null || resultados.Count == 0)
+            // Si hay resultados, los retornamos
+            if (resultados.Any())
             {
                 return new ActionResponse<IEnumerable<T>>
                 {
-                    Message = $"No se encontraron registros de {typeof(T).Name} que contengan '{busqueda}'."
+                    WasSuccess = true,
+                    Result = resultados
                 };
             }
 
-            //Devuelve la lista con los resultados que coincidan
+            // Si no se encuentra ningún registro, devolvemos un mensaje
             return new ActionResponse<IEnumerable<T>>
             {
-                WasSuccess = true,
-                Result = resultados
+                WasSuccess = false,
+                Message = "No se encontraron registros que coincidan con la búsqueda."
             };
         }
+
+
+
 
         public virtual async Task<ActionResponse<IEnumerable<T>>> GetAsync() => new ActionResponse<IEnumerable<T>>
         {

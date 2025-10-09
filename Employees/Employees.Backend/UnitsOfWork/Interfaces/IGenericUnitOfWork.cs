@@ -12,7 +12,7 @@ namespace Employees.Backend.UnitsOfWork.Interfaces
 
         Task<ActionResponse<T>> DeleteAsync(int id);
 
-        Task<ActionResponse<IEnumerable<T>>> GetAsync(string nombre);
+        Task<ActionResponse<IEnumerable<T>>> GetAsync(string filtro);
     }
 
 }
