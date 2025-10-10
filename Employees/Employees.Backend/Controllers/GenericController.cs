@@ -1,4 +1,5 @@
 ﻿using Employees.Backend.UnitsOfWork.Interfaces;
+using Employees.Shared.DTOs;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Employees.Backend.Controllers
@@ -7,7 +8,7 @@ namespace Employees.Backend.Controllers
     {
         private readonly IGenericUnitOfWork<T> _unitOfWork;
 
-        public GenericController(IGenericUnitOfWork<T> unitOfWork) 
+        public GenericController(IGenericUnitOfWork<T> unitOfWork)
         {
             _unitOfWork = unitOfWork;
         }
@@ -33,6 +34,28 @@ namespace Employees.Backend.Controllers
                 return Ok(action.Result);
             }
             return NotFound();
+        }
+
+        [HttpGet("paginated")]
+        public virtual async Task<IActionResult> GetAsync([FromQuery] PaginationDTO pagination)
+        {
+            var action = await _unitOfWork.GetAsync(pagination);
+            if (action.WasSuccess)
+            {
+                return Ok(action.Result);
+            }
+            return BadRequest();
+        }
+
+        [HttpGet("totalRecords")]
+        public virtual async Task<IActionResult> GetTotalRecordsAsync([FromQuery] PaginationDTO pagination)
+        {
+            var action = await _unitOfWork.GetTotalRecordsAsync(pagination);
+            if (action.WasSuccess)
+            {
+                return Ok(action.Result);
+            }
+            return BadRequest();
         }
 
         [HttpPost]
@@ -67,6 +90,5 @@ namespace Employees.Backend.Controllers
             }
             return BadRequest(action.Message);
         }
-
     }
 }

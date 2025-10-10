@@ -1,5 +1,6 @@
 ﻿using Employees.Backend.Data;
 using Employees.Backend.UnitsOfWork.Interfaces;
+using Employees.Shared.DTOs;
 using Employees.Shared.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -39,5 +40,17 @@ namespace Employees.Backend.Controllers
             }
             return NotFound();
         }
+
+        [HttpGet("paginated")]
+        public override async Task<IActionResult> GetAsync(PaginationDTO pagination)
+        {
+            var response = await _empleadosUnitOfWork.GetAsync(pagination);
+            if (response.WasSuccess)
+            {
+                return Ok(response.Result);
+            }
+            return BadRequest();
+        }
+
     }
 }

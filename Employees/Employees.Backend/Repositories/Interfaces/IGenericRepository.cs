@@ -1,4 +1,5 @@
-﻿using Employees.Shared.Responses;
+﻿using Employees.Shared.DTOs;
+using Employees.Shared.Responses;
 
 namespace Employees.Backend.Repositories.Interfaces
 {
@@ -13,5 +14,10 @@ namespace Employees.Backend.Repositories.Interfaces
         Task<ActionResponse<T>> DeleteAsync(int id);
 
         Task<ActionResponse<T>> UpdateAsync(T entity);
+
+        Task<ActionResponse<IEnumerable<T>>> GetAsync(PaginationDTO pagination);
+
+        Task<ActionResponse<int>> GetTotalRecordsAsync(PaginationDTO pagination);
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using Employees.Shared.Entities;
+﻿using Employees.Shared.DTOs;
+using Employees.Shared.Entities;
 using Employees.Shared.Responses;
 
 namespace Employees.Backend.Repositories.Interfaces
@@ -7,7 +8,9 @@ namespace Employees.Backend.Repositories.Interfaces
     {
         Task<ActionResponse<IEnumerable<Empleado>>> GetAsync();
         Task<ActionResponse<IEnumerable<Empleado>>> GetAsync(string filtro);
+        Task<ActionResponse<IEnumerable<Empleado>>> GetAsync( PaginationDTO pagination);
 
-       
+
+
     }
 }

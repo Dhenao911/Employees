@@ -1,5 +1,6 @@
 ﻿using Employees.Backend.Repositories.Interfaces;
 using Employees.Backend.UnitsOfWork.Interfaces;
+using Employees.Shared.DTOs;
 using Employees.Shared.Entities;
 using Employees.Shared.Responses;
 
@@ -20,7 +21,10 @@ namespace Employees.Backend.UnitsOfWork.Implementations
 
         public override async Task<ActionResponse<IEnumerable<Empleado>>> GetAsync(string filtro) => await _empleadosRepository.GetAsync(filtro);
        
-        
+        public override async Task<ActionResponse<IEnumerable<Empleado>>> GetAsync(PaginationDTO pagination) => await _empleadosRepository.GetAsync(pagination);
+
+
+
     }
 
 

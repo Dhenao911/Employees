@@ -1,5 +1,7 @@
 ﻿using Employees.Backend.Data;
+using Employees.Backend.Helpers;
 using Employees.Backend.Repositories.Interfaces;
+using Employees.Shared.DTOs;
 using Employees.Shared.Responses;
 using Microsoft.EntityFrameworkCore;
 
@@ -71,10 +73,9 @@ namespace Employees.Backend.Repositories.Implementations
 
         //Metodo que filtra registros por nombres o apellidos si colocas "Ju" buscara registros que coincidan con esa cadena
         // Método genérico que busca registros que contengan una cadena de texto en cualquiera de sus campos de tipo string.
-        // Método genérico que busca una cadena dentro de cualquier propiedad string de la entidad
         public virtual async Task<ActionResponse<IEnumerable<T>>> GetAsync(string filtro)
         {
-            // Validamos que se haya enviado un texto para buscar
+            // Verifica si la cadena de búsqueda está vacía o nula
             if (string.IsNullOrWhiteSpace(filtro))
             {
                 return new ActionResponse<IEnumerable<T>>
@@ -84,44 +85,43 @@ namespace Employees.Backend.Repositories.Implementations
                 };
             }
 
-            // Convertimos el filtro a minúsculas para búsqueda sin distinción de mayúsculas
+            // Convierte el texto a minúsculas para hacer la búsqueda insensible a mayúsculas
             filtro = filtro.ToLower();
 
-            // Cargamos todos los registros de la entidad desde la base de datos
-            var registros = await _entity.ToListAsync();
+            // Obtiene todos los registros de la entidad actual
+            var query = _entity.AsQueryable();
 
-            // Obtenemos las propiedades tipo string de la clase genérica T
-            var propiedadesTexto = typeof(T).GetProperties()
-                .Where(p => p.PropertyType == typeof(string))
-                .ToList();
+            // Usa reflexión para obtener las propiedades de tipo string del modelo genérico T
+            var stringProperties = typeof(T).GetProperties()
+                .Where(p => p.PropertyType == typeof(string));
 
-            // Filtramos en memoria (LINQ to Objects)
-            var resultados = registros.Where(e =>
-                propiedadesTexto.Any(p =>
-                {
-                    var valor = p.GetValue(e) as string;
-                    return valor != null && valor.ToLower().Contains(filtro);
-                })
-            ).ToList();
+            // Aplica un filtro dinámico: busca el texto dentro de cualquier propiedad string
+            var results = await query.Where(e =>
+                stringProperties.Any(p =>
+                    // Obtiene el valor de la propiedad y lo convierte a string
+                    (p.GetValue(e) != null) &&
+                    // Convierte a minúsculas y verifica si contiene la cadena buscada
+                    p.GetValue(e)!.ToString()!.ToLower().Contains(filtro)
+                )
+            ).ToListAsync();
 
-            // Si hay resultados, los retornamos
-            if (resultados.Any())
+            // Si encontró registros, los devuelve
+            if (results.Any())
             {
                 return new ActionResponse<IEnumerable<T>>
                 {
                     WasSuccess = true,
-                    Result = resultados
+                    Result = results
                 };
             }
 
-            // Si no se encuentra ningún registro, devolvemos un mensaje
+            // Si no encontró registros, devuelve un mensaje informativo
             return new ActionResponse<IEnumerable<T>>
             {
                 WasSuccess = false,
                 Message = "No se encontraron registros que coincidan con la búsqueda."
             };
         }
-
 
 
 
@@ -162,5 +162,30 @@ namespace Employees.Backend.Repositories.Implementations
         {
             Message = " Ya existe el registro. "
         };
+
+        public virtual async Task<ActionResponse<IEnumerable<T>>> GetAsync(PaginationDTO pagination)
+        {
+            var queryable = _entity.AsQueryable();
+
+            return new ActionResponse<IEnumerable<T>>
+            {
+                WasSuccess = true,
+                Result = await queryable
+                    .Paginate(pagination)
+                    .ToListAsync()
+            };
+        }
+
+        public virtual async Task<ActionResponse<int>> GetTotalRecordsAsync(PaginationDTO pagination)
+        {
+            var queryable = _entity.AsQueryable();
+            double count = await queryable.CountAsync();
+            return new ActionResponse<int>
+            {
+                WasSuccess = true,
+                Result = (int)count
+            };
+        }
+
     }
 }
