@@ -13,10 +13,11 @@
                   For="@(() => Empleado.LastName)"
                   Class="mb-4"
                   Required="true" />
-    
-    <MudRadioGroup
-        @bind-Value="Empleado.IsActive" 
-        Class="mb-4">
+
+    <MudText Typo="Typo.subtitle1" Class="mb-2">Activo</MudText>
+
+    <MudRadioGroup @bind-Value="Empleado.IsActive"
+                   Class="mb-4">
         <MudRadio Value="@true" Color="Color.Primary">Sí</MudRadio>
         <MudRadio Value="@false" Color="Color.Secondary">No</MudRadio>
     </MudRadioGroup>
