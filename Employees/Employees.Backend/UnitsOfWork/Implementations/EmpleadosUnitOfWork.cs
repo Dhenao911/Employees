@@ -23,6 +23,7 @@ namespace Employees.Backend.UnitsOfWork.Implementations
        
         public override async Task<ActionResponse<IEnumerable<Empleado>>> GetAsync(PaginationDTO pagination) => await _empleadosRepository.GetAsync(pagination);
 
+        public override async Task<ActionResponse<int>> GetTotalRecordsAsync(PaginationDTO pagination) => await _empleadosRepository.GetTotalRecordsAsync(pagination);
 
 
     }

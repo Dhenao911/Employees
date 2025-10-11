@@ -9,6 +9,8 @@ namespace Employees.Backend.Repositories.Interfaces
         Task<ActionResponse<IEnumerable<Empleado>>> GetAsync();
         Task<ActionResponse<IEnumerable<Empleado>>> GetAsync(string filtro);
         Task<ActionResponse<IEnumerable<Empleado>>> GetAsync( PaginationDTO pagination);
+        Task<ActionResponse<int>> GetTotalRecordsAsync(PaginationDTO pagination);
+
 
 
 

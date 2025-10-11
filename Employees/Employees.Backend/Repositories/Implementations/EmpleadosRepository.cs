@@ -69,5 +69,24 @@ namespace Employees.Backend.Repositories.Implementations
                     .ToListAsync()
             };
         }
+
+        public override async Task<ActionResponse<int>> GetTotalRecordsAsync(PaginationDTO pagination)
+        {
+            var queryable = _context.Empleados.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(pagination.Filter))
+            {
+                queryable = queryable.Where(e => e.FirstName.ToLower().Contains(pagination.Filter.ToLower()) 
+                || e.LastName.ToLower().Contains(pagination.Filter.ToLower()));
+            }
+
+            double count = await queryable.CountAsync();
+            return new ActionResponse<int>
+            {
+                WasSuccess = true,
+                Result = (int)count
+            };
+        }
+
     }
 }
