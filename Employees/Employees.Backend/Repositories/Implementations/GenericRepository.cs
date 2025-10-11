@@ -43,7 +43,7 @@ namespace Employees.Backend.Repositories.Implementations
         public virtual async Task<ActionResponse<T>> DeleteAsync(int id)
         {
             var row = await _entity.FindAsync(id);
-            if (row != null)
+            if (row == null)
             {
                 return new ActionResponse<T>
                 {
@@ -70,6 +70,25 @@ namespace Employees.Backend.Repositories.Implementations
                 };
             }
         }
+
+        public virtual async Task<ActionResponse<T>> GetAsync(int id)
+        {
+            var row = await _entity.FindAsync(id);
+            if (row != null)
+            {
+                return new ActionResponse<T>
+                {
+                    WasSuccess = true,
+                    Result = row
+                };
+            }
+            return new ActionResponse<T>
+            {
+                WasSuccess = false,
+                Message = "Registro no encontrado"
+            };
+        }
+
 
         //Metodo que filtra registros por nombres o apellidos si colocas "Ju" buscara registros que coincidan con esa cadena
         // Método genérico que busca registros que contengan una cadena de texto en cualquiera de sus campos de tipo string.

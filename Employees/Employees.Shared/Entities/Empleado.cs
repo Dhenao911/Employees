@@ -19,11 +19,12 @@ namespace Employees.Shared.Entities
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public string LastName { get; set; } = null!;
 
-        [Required(ErrorMessage = "El campo {0} es obligatorio")]
-        public bool IsActive { get; set; }
 
-        [Required(ErrorMessage = "El campo {0} es obligatorio")]
-        public DateTime HireDate { get; set; }
+        
+        public bool? IsActive { get; set; }= true;
+
+
+        public DateTime? HireDate { get; set; }
 
         [Range(1000000, double.MaxValue, ErrorMessage = "El valor minimo del campo {0} es de {1}")]
         [Required(ErrorMessage = "El campo {0} es obligatorio")]

@@ -2,13 +2,9 @@ using Employees.Frontend.Components.Shared;
 using Employees.Frontend.Repositories;
 using Microsoft.AspNetCore.Components;
 using MudBlazor;
-using Employees.Frontend.Components.Shared;
-
 using Employees.Shared.Entities;
 using System.Diagnostics.Metrics;
 using System.Net;
-using Employees.Frontend.Components.Pages.Empleados;
-
 namespace Employees.Frontend.Components.Pages.Empleados;
 
 public partial class EmployeesIndex
@@ -91,7 +87,7 @@ public partial class EmployeesIndex
         await table.ReloadServerData();
     }
 
-    private async Task ShowModalAsync(int id = 0, bool isEdit = false)
+    private async Task ShowModalAsync(int id= 0 , bool isEdit = false)
     {
         var options = new DialogOptions
         {

@@ -1,3 +1,12 @@
-﻿<h3>EmployeesEdit</h3>
-
-
+﻿@if (empleado is null)
+{
+    <Loading />
+}
+else
+{
+    <MudDialog>
+        <DialogContent>
+            <EmployeesForm Empleado="empleado" OnValidSubmit="EditAsync" ReturnAction="Return" />
+        </DialogContent>
+    </MudDialog>
+}

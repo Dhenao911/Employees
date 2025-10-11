@@ -12,6 +12,7 @@ namespace Employees.Backend.UnitsOfWork.Interfaces
         Task<ActionResponse<T>> UpdateAsync(T entity);
 
         Task<ActionResponse<T>> DeleteAsync(int id);
+        Task<ActionResponse<T>> GetAsync(int id);
 
         Task<ActionResponse<IEnumerable<T>>> GetAsync(string filtro);
 

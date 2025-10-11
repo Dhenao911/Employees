@@ -19,6 +19,8 @@ public class GenericUnitOfWork<T> : IGenericUnitOfWork<T> where T : class
     public virtual async Task<ActionResponse<T>> DeleteAsync(int id) => await _repository.DeleteAsync(id);
 
     public virtual async Task<ActionResponse<IEnumerable<T>>> GetAsync() => await _repository.GetAsync();
+    public virtual async Task<ActionResponse<T>> GetAsync(int id) => await _repository.GetAsync(id);
+
 
     public virtual async Task<ActionResponse<IEnumerable<T>>> GetAsync(string filtro) => await _repository.GetAsync(filtro);
 

@@ -23,6 +23,16 @@ namespace Employees.Backend.Controllers
             }
             return BadRequest();
         }
+        [HttpGet("{id:int}")]
+        public virtual async Task<IActionResult> GetAsync(int id)
+        {
+            var action = await _unitOfWork.GetAsync(id);
+            if (action.WasSuccess)
+            {
+                return Ok(action.Result);
+            }
+            return NotFound();
+        }
 
         //Este metodo me filtra por nombre o apellido
         [HttpGet("{filtro}")]
