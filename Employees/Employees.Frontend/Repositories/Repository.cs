@@ -60,6 +60,7 @@ namespace Employees.Frontend.Repositories
 
         public async Task<HttpResponseWrapper<object>> PutAsync<T>(string url, T model)
         {
+
             var messageJson = JsonSerializer.Serialize(model);
             var messageContent = new StringContent(messageJson, Encoding.UTF8, "application/json");
             var responseHttp = await _httpClient.PutAsync(url, messageContent);

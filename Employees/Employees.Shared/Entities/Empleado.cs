@@ -21,7 +21,7 @@ namespace Employees.Shared.Entities
 
 
         
-        public bool? IsActive { get; set; }= true;
+        public bool IsActive { get; set; }
 
 
         public DateTime? HireDate { get; set; }

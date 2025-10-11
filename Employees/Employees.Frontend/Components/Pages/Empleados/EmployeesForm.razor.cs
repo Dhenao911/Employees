@@ -14,9 +14,10 @@ public partial class EmployeesForm
     [EditorRequired, Parameter] public EventCallback ReturnAction { get; set; }
 
     protected override void OnInitialized()
-    {
-        
+    {    
         editContext = new(Empleado);
+
+       
     }
 }
 

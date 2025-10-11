@@ -14,19 +14,12 @@
                   Class="mb-4"
                   Required="true" />
 
-
-
-    <MudText Typo="Typo.subtitle1">Empleado Activo</MudText>
-
     <MudRadioGroup T="bool" @bind-SelectedValue="Empleado.IsActive" Class="mb-4">
-        <MudRadio T="bool" Option="@(true)">Sí</MudRadio>
-        <MudRadio T="bool" Option="@(false)">No</MudRadio>
+        <MudRadio T="bool" Option="true">Sí</MudRadio>
+        <MudRadio T="bool" Option="false">No</MudRadio>
     </MudRadioGroup>
 
-    <ValidationMessage For="@(() => Empleado.IsActive)" />
- 
-
-
+   
 
     <MudDatePicker Label="Fecha de Contratación"
                    @bind-Date="Empleado.HireDate"
