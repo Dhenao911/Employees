@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,10 +20,7 @@ namespace Employees.Shared.Entities
         [Required(ErrorMessage = "El campo {0} es obligatorio")]
         public string LastName { get; set; } = null!;
 
-
-        
         public bool IsActive { get; set; }
-
 
         public DateTime? HireDate { get; set; }
 

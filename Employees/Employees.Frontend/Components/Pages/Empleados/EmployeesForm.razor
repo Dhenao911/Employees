@@ -2,27 +2,31 @@
     <DataAnnotationsValidator />
 
 
-    <MudTextField Label="Nombre"
+    <MudTextField Label="Firstname"
                   @bind-Value="@Empleado.FirstName"
                   For="@(() => Empleado.FirstName)"
                   Class="mb-4" 
                   Required="true" />
 
-    <MudTextField Label="Apellido"
+    <MudTextField Label="Lastname"
                   @bind-Value="@Empleado.LastName"
                   For="@(() => Empleado.LastName)"
                   Class="mb-4"
                   Required="true" />
-
-    <MudRadioGroup @bind-Value="Empleado.IsActive" Class="mb-4">
+    
+    <MudRadioGroup
+        @bind-Value="Empleado.IsActive" 
+        Class="mb-4">
         <MudRadio Value="@true" Color="Color.Primary">Sí</MudRadio>
         <MudRadio Value="@false" Color="Color.Secondary">No</MudRadio>
     </MudRadioGroup>
 
     <MudDatePicker Label="Fecha de Contratación"
                    @bind-Date="Empleado.HireDate"
+                   DateFormat="dd/MM/yyyy"            
                    Class="mb-4"
-                   Required="true" />
+                   Required="true"/>
+
 
     <MudTextField Label="Salario"
                     @bind-Value="@Empleado.Salary"
