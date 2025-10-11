@@ -14,10 +14,11 @@
                   Class="mb-4"
                   Required="true" />
 
-    <MudRadioGroup T="bool" @bind-SelectedValue="Empleado.IsActive" Class="mb-4">
-        <MudRadio T="bool" Option="true">Sí</MudRadio>
-        <MudRadio T="bool" Option="false">No</MudRadio>
+    <MudRadioGroup @bind-Value="Empleado.IsActive" Class="mb-4">
+        <MudRadio Value="@true" Color="Color.Primary">Sí</MudRadio>
+        <MudRadio Value="@false" Color="Color.Secondary">No</MudRadio>
     </MudRadioGroup>
+
 
    
 
