@@ -1,4 +1,5 @@
 ﻿using Employees.Shared.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace Employees.Backend.Data;
 
@@ -15,8 +16,19 @@ public class SeedDb
     {
         await _context.Database.EnsureCreatedAsync();
         await checkEmpleadosAsync();
-        
+        await CheckCountriesFullAsync();
+
     }
+
+    private async Task CheckCountriesFullAsync()
+    {
+        if (!_context.Countries.Any())
+        {
+            var countriesSQLScript = File.ReadAllText("Data\\CountriesStatesCities.sql");
+            await _context.Database.ExecuteSqlRawAsync(countriesSQLScript);
+        }
+    }
+
 
     private async Task checkEmpleadosAsync()
     {

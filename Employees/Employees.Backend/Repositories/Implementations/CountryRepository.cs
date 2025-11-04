@@ -1,0 +1,99 @@
+﻿using Employees.Backend.Data;
+using Employees.Backend.Helpers;
+using Employees.Backend.Repositories.Interfaces;
+using Employees.Shared.DTOs;
+using Employees.Shared.Entities;
+using Employees.Shared.Responses;
+using Microsoft.EntityFrameworkCore;
+
+namespace Employees.Backend.Repositories.Implementations
+{
+    public class CountryRepository : GenericRepository<Country>, ICountryRepository
+    {
+        private readonly DataContext _context;
+
+        public CountryRepository(DataContext context) : base(context)
+        {
+            _context = context;
+        }
+
+        public override async Task<ActionResponse<IEnumerable<Country>>> GetAsync()
+        {
+            var countries = await _context.Countries
+                .ToListAsync();
+            return new ActionResponse<IEnumerable<Country>>
+            {
+                WasSuccess = true,
+                Result = countries
+            };
+        }
+
+        public override async Task<ActionResponse<Country>> GetAsync(int id)
+        {
+            var contries = await _context.Countries
+                .Include(c => c.State)
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            return new ActionResponse<Country>
+            {
+                WasSuccess = true,
+                Result = contries
+            };
+        }
+
+        public override async Task<ActionResponse<IEnumerable<Country>>> GetAsync(string filtro)
+        {
+            var countries = await _context.Countries
+                .Where(c => c.Name.ToLower().Contains(filtro))
+                .ToListAsync();
+            if (countries == null)
+            {
+                return new ActionResponse<IEnumerable<Country>>
+                {
+                    Message = "No se encontraron paises que coincidan con esos caracteres"
+                };
+            }
+            return new ActionResponse<IEnumerable<Country>>
+            {
+                WasSuccess = true,
+                Result = countries
+            };
+        }
+
+        public override async Task<ActionResponse<IEnumerable<Country>>> GetAsync(PaginationDTO pagination)
+        {
+            var queryable = _context.Countries.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(pagination.Filter))
+            {
+                queryable = queryable.Where(c => c.Name.ToLower().Contains(pagination.Filter.ToLower()));
+            }
+
+            return new ActionResponse<IEnumerable<Country>>
+            {
+                WasSuccess = true,
+                Result = await queryable
+                    .OrderBy(x => x.Name)
+                    .Paginate(pagination)
+                    .ToListAsync()
+            };
+        }
+
+        public override async Task<ActionResponse<int>> GetTotalRecordsAsync(PaginationDTO pagination)
+        {
+            var queryable = _context.Countries.AsQueryable();
+            if (!string.IsNullOrWhiteSpace(pagination.Filter))
+            {
+                queryable = queryable.Where(c => c.Name.ToLower().Contains(pagination.Filter.ToLower()));
+            }
+
+            double count = await queryable.CountAsync();
+
+            return new ActionResponse<int>
+            {
+                WasSuccess = true,
+                Result = (int)count
+            };
+        }
+    }
+}
