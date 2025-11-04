@@ -26,6 +26,10 @@ builder.Services.AddScoped<IEmpleadosUnitOfWork,EmpleadosUnitOfWork>();
 builder.Services.AddScoped<IEmpleadosRepository, EmpleadosRepository>();
 builder.Services.AddScoped<ICountryUnitOfWork, CountryUnitOfWork>();
 builder.Services.AddScoped<ICountryRepository, CountryRepository>();
+builder.Services.AddScoped<IStateUnitOfWork, StateUnitOfWork>();
+builder.Services.AddScoped<IStateRepository, StateRepository>();
+builder.Services.AddScoped<ICityUnitOfWork, CityUnitOfWork>();
+builder.Services.AddScoped<ICityRepository, CityRepository>();
 
 
 

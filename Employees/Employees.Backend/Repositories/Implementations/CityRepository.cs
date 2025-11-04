@@ -8,78 +8,74 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Employees.Backend.Repositories.Implementations
 {
-    public class CountryRepository : GenericRepository<Country>, ICountryRepository
+    public class CityRepository: GenericRepository<City>, ICityRepository
     {
         private readonly DataContext _context;
 
-        public CountryRepository(DataContext context) : base(context)
+        public CityRepository(DataContext context) : base(context)
         {
             _context = context;
         }
 
-        public override async Task<ActionResponse<IEnumerable<Country>>> GetAsync()
+        public override async Task<ActionResponse<IEnumerable<City>>> GetAsync()
         {
-            var countries = await _context.Countries
+            var city = await _context.Cities
                 .AsNoTracking()
-                .Include(c => c.State)
                 .ToListAsync();
-            return new ActionResponse<IEnumerable<Country>>
+            return new ActionResponse<IEnumerable<City>>
             {
                 WasSuccess = true,
-                Result = countries
+                Result = city
             };
         }
 
-        public override async Task<ActionResponse<Country>> GetAsync(int id)
+        public override async Task<ActionResponse<City>> GetAsync(int id)
         {
-            var contries = await _context.Countries
+            var city = await _context.Cities
                 .AsNoTracking()
-                .Include(c => c.State)
                 .FirstOrDefaultAsync(c => c.Id == id);
 
-            return new ActionResponse<Country>
+            return new ActionResponse<City>
             {
                 WasSuccess = true,
-                Result = contries
+                Result = city
             };
         }
 
-        public override async Task<ActionResponse<IEnumerable<Country>>> GetAsync(string filtro)
+        public override async Task<ActionResponse<IEnumerable<City>>> GetAsync(string filtro)
         {
-            var countries = await _context.Countries
+            var city = await _context.Cities
                 .AsNoTracking()
-                .Include(c => c.State)
-                .Where(c => c.Name.ToLower().Contains(filtro))
+                .Where(c => c.Name.Contains(filtro))
                 .ToListAsync();
-            if (countries == null)
+            if (city == null)
             {
-                return new ActionResponse<IEnumerable<Country>>
+                return new ActionResponse<IEnumerable<City>>
                 {
-                    Message = "No se encontraron paises que coincidan con esos caracteres"
+                    Message = "No se encontraron estados que coincidan con esos caracteres"
                 };
             }
-            return new ActionResponse<IEnumerable<Country>>
+            return new ActionResponse<IEnumerable<City>>
             {
                 WasSuccess = true,
-                Result = countries
+                Result = city
             };
         }
 
-        public override async Task<ActionResponse<IEnumerable<Country>>> GetAsync(PaginationDTO pagination)
+        public override async Task<ActionResponse<IEnumerable<City>>> GetAsync(PaginationDTO pagination)
         {
-            var queryable = _context.Countries.AsQueryable();
+            var queryable = _context.Cities.AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(pagination.Filter))
             {
                 queryable = queryable.Where(c => c.Name.ToLower().Contains(pagination.Filter.ToLower()));
             }
 
-            return new ActionResponse<IEnumerable<Country>>
+            return new ActionResponse<IEnumerable<City>>
             {
                 WasSuccess = true,
                 Result = await queryable
-                    .AsNoTracking()
-                    .Include(c => c.State)
+                .AsNoTracking()
                     .OrderBy(x => x.Name)
                     .Paginate(pagination)
                     .ToListAsync()
@@ -88,7 +84,7 @@ namespace Employees.Backend.Repositories.Implementations
 
         public override async Task<ActionResponse<int>> GetTotalRecordsAsync(PaginationDTO pagination)
         {
-            var queryable = _context.Countries.AsQueryable();
+            var queryable = _context.Cities.AsQueryable();
             if (!string.IsNullOrWhiteSpace(pagination.Filter))
             {
                 queryable = queryable.Where(c => c.Name.ToLower().Contains(pagination.Filter.ToLower()));

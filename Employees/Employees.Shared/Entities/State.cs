@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Employees.Shared.Entities
@@ -20,10 +21,11 @@ namespace Employees.Shared.Entities
 
         public int CountryId { get; set; }
 
+        [JsonIgnore]
         public Country? Country { get; set; }
 
-        public ICollection<City>? Cities { get; set; }
+        public ICollection<City>? City{ get; set; }
 
-        public int NumberCities => Cities == null ? 0 : Cities.Count;
+        public int NumberCities => City == null ? 0 : City.Count;
     }
 }
